@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Login Painel Secreto</title>
+</head>
+<body class="bg-black text-white p-4">
+  <div class="max-w-sm mx-auto mt-20 bg-gray-900 p-6 rounded shadow">
+    <h1 class="text-xl font-bold mb-4 text-center">🔐 Painel Secreto</h1>
+
+    <input id="login" type="text" placeholder="Login"
+      class="w-full mb-3 p-2 rounded bg-gray-800 border border-gray-600" />
+    <input id="senha" type="password" placeholder="Senha"
+      class="w-full mb-3 p-2 rounded bg-gray-800 border border-gray-600" />
+
+    <button onclick="verificarLogin()"
+      class="w-full bg-green-600 hover:bg-green-500 py-2 rounded font-bold">
+      Entrar
+    </button>
+    <p id="erro" class="text-red-400 text-center mt-4"></p>
+  </div>
+
+  <script>
+    function verificarLogin() {
+      const login = document.getElementById('login').value;
+      const senha = document.getElementById('senha').value;
+      if (login === 'Zt' && senha === 'zt') {
+        localStorage.setItem('autenticado', 'true');
+        window.location.href = 'index.html';
+      } else {
+        document.getElementById('erro').innerText = "Login ou senha incorretos.";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+# Impede acesso direto aos arquivos via navegador
+<FilesMatch "\.(php|inc)$">
+  Order Allow,Deny
+  Deny from all
+</FilesMatch>
+
+# Permite execução interna (por include/require)
+<FilesMatch "^(login|painel|salvar|logout|auth)\.php$">
+  Allow from all
+</FilesMatch>
+
+# Protege listagem de diretórios
+Options -Indexes

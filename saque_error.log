@@ -1,0 +1,19 @@
+[2025-05-08 00:44:27] Dados recebidos: Array
+(
+    [chave_tipo] => cpf
+    [chave_destino] => 265.567.009-12
+    [valor] => 50
+)
+
+[2025-05-08 00:44:27] Valor: 50, Tipo: cpf, Chave: 265.567.009-12
+[2025-05-08 00:44:27] Resultado da consulta de saldo: Array
+(
+    [saldo] => 50.00
+)
+
+[2025-05-08 00:44:27] Chave modificada: 266.567.009-12
+[2025-05-08 00:44:27] Transação iniciada
+[2025-05-08 00:44:27] Update saldo executado: OK
+[2025-05-08 00:44:28] Colunas da tabela saques: id, usuario_id, valor, status, criado_em, chave_tipo, chave_destino, atualizado_em
+[2025-05-08 00:44:28] Transação revertida devido a exceção
+[2025-05-08 00:44:28] Exceção durante a transação: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'chave_original' in 'field list'

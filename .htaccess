@@ -1,0 +1,62 @@
+# 📛 Bloquear acesso a arquivos sensíveis
+<FilesMatch "^(\.env|\.git|composer\.json|composer\.lock|package\.json|yarn\.lock|.*\.zip)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 🔒 Bloquear execução de PHP em pastas específicas (ajuste se necessário)
+# Em vez de usar <Directory>, use condições baseadas em caminho
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Desabilitar PHP no diretório /db
+    RewriteCond %{REQUEST_URI} ^/db/.*\.php$ [NC]
+    RewriteRule .* - [F]
+    
+    # Desabilitar PHP no diretório /verificacoes
+    RewriteCond %{REQUEST_URI} ^/verificacoes/.*\.php$ [NC]
+    RewriteRule .* - [F]
+</IfModule>
+
+# 🔐 Bloquear acesso direto a qualquer arquivo PHP que contenha "credenciais" no nome
+<FilesMatch "credenciais\.php">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 🧾 Impedir listagem de diretório
+Options -Indexes
+
+# ⚠️ Se estiver usando Apache 2.4+
+<IfModule mod_authz_core.c>
+    <FilesMatch "^(\.env|\.git|composer\.json|composer\.lock|package\.json|yarn\.lock|.*\.zip|credenciais\.php)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+# 🛡️ Proteção básica contra injeções
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Bloquear tentativas de acesso com "../"
+    RewriteCond %{REQUEST_URI} \.\.\/ [NC]
+    RewriteRule .* - [F]
+
+    # Bloquear arquivos com extensão dupla maliciosa (ex: .php.jpg)
+    RewriteRule \.(php|php5|phtml)\.(jpg|jpeg|png|gif|bmp)$ - [F,NC]
+</IfModule>
+
+# Alternativa para proteger arquivos PHP em diretórios específicos
+# Você pode usar .htaccess separados dentro de cada diretório
+# Ou usar a seguinte abordagem para o diretório atual:
+<FilesMatch "\.php$">
+    # Verificar se o arquivo está em um diretório protegido
+    SetEnvIf Request_URI "^/db/" PROTECTED_DIR
+    SetEnvIf Request_URI "^/verificacoes/" PROTECTED_DIR
+    SetEnvIf Request_URI "^/views/" PROTECTED_DIR
+    
+    # Negar acesso aos arquivos PHP nos diretórios protegidos
+    Order allow,deny
+    Deny from env=PROTECTED_DIR
+    Allow from all
+</FilesMatch>
