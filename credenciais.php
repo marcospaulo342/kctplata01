@@ -1,9 +1,9 @@
 <?php
 // CONFIGURAÇÃO DO BANCO (ajuste com seus dados)
-$host = 'localhost';
-$db   = 'db123456';
-$user = 'db123456';
-$pass = 'db123456';
+$host = '127.0.0.1';
+$db   = 'ttttgggggggg';
+$user = 'ttttgggggggg';
+$pass = 'ttttgggggggg';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);

@@ -1,8 +1,8 @@
 <?php
-$host = 'localhost';
-$db = 'db123456';
-$user = 'db123456';
-$pass = 'db123456';
+$host = 'http://127.0.0.1';
+$db = 'ttttgggggggg';
+$user = 'ttttgggggggg';
+$pass = 'ttttgggggggg';
 $port = 3306; // ✅ Porta adicionada aqui
 
 try {
